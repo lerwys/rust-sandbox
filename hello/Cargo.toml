@@ -1,0 +1,9 @@
+[package]
+
+name = "hello_world"
+version = "0.0.1"
+authors = [ "Lucas Russo <lerwys@gmail.com" ]
+
+[[bin]]
+
+name = "hello_world"
