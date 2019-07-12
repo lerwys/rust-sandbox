@@ -1,47 +1,41 @@
+extern crate rand;
+
+use rand::Rng;
+use std::cmp::Ordering;
 use std::io;
-use std::rand;
 
 fn main() {
     println!("******************************");
     println!("****** Guessing game! ********");
     println!("******************************");
 
-    let secret_number = (rand::random::<uint>() % 100u) + 1u;
+    let secret_number = rand::thread_rng().gen_range(1, 101);
 
     println!("The secret number is: {}", secret_number);
 
     loop {
-        print!("Please input your guess: ");
+        print!("Please input your input: ");
 
-        let input = io::stdin().read_line()
-            .ok()
+        let mut input = String::new();
+
+        io::stdin()
+            .read_line(&mut input)
             .expect("Failed to read line");
-        let input_num: Option<uint> = from_str(input.as_slice().trim());
 
-        let num = match input_num {
-            Some(num) => num,
-            None      => {
-                println!("Please input a number!");
-                continue;
-            }
+        let input: u32 = match input.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
         };
 
         println!("You guessed: {}", input);
 
-        match cmp(num, secret_number) {
-            Less    => println!("Too small!"),
-            Greater => println!("Too big!"),
-            Equal   => {
+        match input.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
                 println!("You win!");
-                return
-            },
+                break;
+            }
         }
     }
 }
-
-fn cmp(a: uint, b: uint) -> Ordering {
-    if a < b { Less }
-    else if a > b { Greater }
-    else { Equal }
-}
-
